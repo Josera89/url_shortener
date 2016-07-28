@@ -1,0 +1,43 @@
+.navbar-nav {
+  color: white;
+  font-size: 16px;
+}
+
+body {
+  background-color: white;
+}
+
+div.jumbotron {
+  background-color: #EEEEEE;
+  color: #616161;
+}
+
+.btn {
+  font-size: 20px;
+}
+
+
+.btn-outline-danger {
+  float: right;
+  position: relative;
+  margin-top: -42px;
+  margin-right: 80%;
+}
+
+.btn-primary {
+  background-color: #424242;
+  border: #212121;
+}
+
+.btn-primary:hover {
+  background-color: #9E9E9E;
+  border: #212121;
+}
+
+ul {
+  font-size: 20px;
+}
+
+form {
+  font-size: 20px;
+}
