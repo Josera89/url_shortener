@@ -1,0 +1,40 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include ../partials/head %>
+</head>
+<body class="container">
+
+    <header>
+      <% include ../partials/header %>
+    </header>
+
+    <main>
+        <div class="jumbotron">
+          <h1 class="text-center">Your short URLs</h1>
+          <h2>Loop</h2>
+            <ul>
+                <% urls.forEach(function(url) { %>
+                    <li><%= url.short %> - <%= url.long %></li>
+                     <form method="POST" action="/urls/<%= url.short %>?_method=DELETE"><button class="btn-danger btn-sm" type="submit">Delete</button></form>
+                <% }); %>
+                <div class="text-center">
+                  <a href="urls/new">Shorten a new URL</a>
+                </div>
+            </ul>
+    </main>
+
+    <footer>
+      <% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>
+
+
+
+
+
+

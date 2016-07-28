@@ -1,0 +1,34 @@
+<!-- views/pages/about.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+    <header>
+        <% include ../partials/header %>
+    </header>
+
+    <main>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="text-center jumbotron">
+                  <h1>Add a new URL</h1>
+                   <form action="/urls/create" method="POST" style="margin:100px;">
+                      <label for="longURL">Enter a URL:</label>
+                      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+                      <input type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>
