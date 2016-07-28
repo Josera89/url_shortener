@@ -4,6 +4,8 @@ var PORT = process.env.PORT || 8080; // default port 8080
 var app = express();
 app.set("view engine", "ejs");
 
+app.use(express.static('public'));
+
 
 //METHOD OVERRIDE
 var connect        = require('connect');
@@ -34,9 +36,8 @@ function randomString() {
 app.get("/", (req, res) => {
   urls = Object
     .keys(urlDatabase)
-    .map(function(short){
-      return { long:urlDatabase[short],
-                short }
+    .map(function(short) {
+      return { long:urlDatabase[short], short }
   })
   res.render("pages/urls_index", urls);
 });
@@ -71,6 +72,21 @@ app.delete("/urls/:id", (req, res) => {
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
+});
+
+
+app.get("/urls/:id/edit", (req, res) => {
+  console.log(req.params);
+  res.render("pages/urls_show", req.params);
+});
+
+// EDIT END POINT
+app.put("/urls/:id/", (req, res) => {
+  // console.log("Updated: ", req.params);
+  // console.log("id: ", urlDatabase[req.params.id]);
+  // console.log("longURL: ", req.body);
+  urlDatabase[req.params.id] = req.body.longURL;
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {

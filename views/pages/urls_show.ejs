@@ -13,20 +13,17 @@
 
     <main>
         <div class="row">
-            <div class="col-sm-8">
-
-                <div class="jumbotron">
-                    <h1>This is great</h1>
-                    <p>Welcome to templating using EJS</p>
+            <div class="col-sm-12">
+                <div class="text-center jumbotron">
+                  <h1>Edit URL</h1>
+                  <h2>Short:</h2>
+                  <h2><%= id %></h2>
+                   <form action="/urls/<%= id %>?_method=PUT" method="POST" style="margin:100px;">
+                      <label for="longURL"></label>
+                      <input id="longURL" type="text" name="longURL" placeholder="<%= urls %>" style="width: 300px">
+                      <input class="btn btn-default" type="submit" value="Update">
+                    </form>
                 </div>
-
-            </div>
-            <div class="col-sm-4">
-
-                <div class="well">
-                    <h3>Look I'm A Sidebar!</h3>
-                </div>
-
             </div>
         </div>
     </main>

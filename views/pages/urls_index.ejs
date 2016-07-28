@@ -14,16 +14,22 @@
     <main>
         <div class="jumbotron">
           <h1 class="text-center">Your short URLs</h1>
-          <h2>Loop</h2>
+          <br>
+          <div>
             <ul>
                 <% urls.forEach(function(url) { %>
                     <li><%= url.short %> - <%= url.long %></li>
-                     <form method="POST" action="/urls/<%= url.short %>?_method=DELETE"><button class="btn-danger btn-sm" type="submit">Delete</button></form>
+                    <br>
+                     <a href="/urls/<%= url.short %>/edit"><button class="btn-link btn-outline-secondary" type="submit">Edit</button></a>
+                     <form method="POST" action="/urls/<%= url.short %>?_method=DELETE"><button class="btn btn-outline-danger" type="submit">Delete  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></form>
+                     <br>
                 <% }); %>
-                <div class="text-center">
-                  <a href="urls/new">Shorten a new URL</a>
-                </div>
             </ul>
+          </div>
+          <br>
+          <div class="text-center">
+            <a href="urls/new"><button class="btn btn-primary btn-lg" type="submit">Add new URL</button></a>
+          </div>
     </main>
 
     <footer>
