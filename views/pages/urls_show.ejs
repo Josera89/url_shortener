@@ -17,10 +17,10 @@
                 <div class="text-center jumbotron">
                   <h1>Edit URL</h1>
                   <h2>Short:</h2>
-                  <h2><%= id %></h2>
-                   <form action="/urls/<%= id %>?_method=PUT" method="POST" style="margin:100px;">
+                  <h2><%= url.shortURL %></h2>
+                   <form action="/urls/<%= url.shortURL %>?_method=PUT" method="POST" style="margin:100px;">
                       <label for="longURL"></label>
-                      <input id="longURL" type="text" name="longURL" placeholder="<%= urls %>" style="width: 300px">
+                      <input id="longURL" type="text" name="longURL" placeholder="<%= url.longURL %>" style="width: 300px">
                       <input class="btn btn-default" type="submit" value="Update">
                     </form>
                 </div>

@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require("express");
 var PORT = process.env.PORT || 8080; // default port 8080
 
@@ -6,21 +8,32 @@ app.set("view engine", "ejs");
 
 app.use(express.static('public'));
 
+const MongoClient = require("mongodb").MongoClient;
+const MONGODB_URI = "mongodb://127.0.0.1:27017/url_shortener";
 
-//METHOD OVERRIDE
+console.log(`Connecting to MongoDB running at: ${MONGODB_URI}`);
+let dbInstance;
+
+MongoClient.connect(MONGODB_URI, (err, db) => {
+  if (err) {
+    console.log('Could not connect! Unexpected error. Details below.');
+    throw err;
+  }
+  dbInstance = db;
+  console.log('Connected to the database!');
+  let collection = db.collection("urls");
+  console.log('Retreiving documents for the collection...');
+  collection.find().toArray((err, results) => {
+    console.log('results found', results);
+  });
+});
+
 var connect        = require('connect');
 var methodOverride = require('method-override');
 app.use(methodOverride('_method'))
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded());
-
-
-var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
-
 
 
 function randomString() {
@@ -34,12 +47,10 @@ function randomString() {
 }
 
 app.get("/", (req, res) => {
-  urls = Object
-    .keys(urlDatabase)
-    .map(function(short) {
-      return { long:urlDatabase[short], short }
-  })
-  res.render("pages/urls_index", urls);
+  dbInstance.collection("urls").find().toArray(function(err, results) {
+    console.log(results);
+    res.render("pages/urls_index", { urls: results });
+  });
 });
 
 app.get("/urls", (req, res) => {
@@ -47,12 +58,20 @@ app.get("/urls", (req, res) => {
 });
 
 
-
 app.post("/urls/create", (req, res) => {
   var shortURL = randomString();
-  urlDatabase[shortURL] = req.body.longURL;
+
+  dbInstance.collection("urls").insert(
+    {
+      shortURL: shortURL,
+      longURL: req.body.longURL,
+    }, function() {
+      console.log('Done!')
+    })
+
+  console.log('Done inserting');
   console.log(req.body);
-  res.redirect("/urls/");
+  res.redirect("/");
 });
 
 app.get("/urls/new", (req, res) => {
@@ -60,33 +79,30 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let longURL = urlDatabase[req.params.id];
-  res.redirect(longURL);
+  dbInstance.collection("urls").findOne({shortURL: req.params.id}, function(err, urlDoc) {
+    console.log(urlDoc);
+    res.render("pages/urls_show", urlDoc);
+  });
 });
 
 app.delete("/urls/:id", (req, res) => {
-  delete urlDatabase[req.params.id];
-  console.log(urlDatabase);
+  dbInstance.collection("urls").deleteOne({shortURL: req.params.id}); // use callback
   res.redirect("/urls");
 });
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
 
 app.get("/urls/:id/edit", (req, res) => {
-  console.log(req.params);
-  res.render("pages/urls_show", req.params);
+  dbInstance.collection("urls").find({shortURL: req.params.id}).toArray(function(err, results) {
+    //console.log("test1", results[0]);
+    res.render("pages/urls_show", { url: results[0] });
+  });
 });
 
-// EDIT END POINT
 app.put("/urls/:id/", (req, res) => {
-  // console.log("Updated: ", req.params);
-  // console.log("id: ", urlDatabase[req.params.id]);
-  // console.log("longURL: ", req.body);
-  urlDatabase[req.params.id] = req.body.longURL;
-  res.redirect("/urls");
+  dbInstance.collection("urls").updateOne({shortURL: req.params.id}, {$set: {longURL: req.body.longURL}}, function(err, urlDoc) {
+      console.log("test1", req.body.id);
+      console.log("test2", req.body.longURL);
+      res.redirect("/urls");
+  });
 });
 
 app.listen(PORT, () => {
