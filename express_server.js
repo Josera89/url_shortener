@@ -8,6 +8,10 @@ app.set("view engine", "ejs");
 
 app.use(express.static('public'));
 
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
+
 const MongoClient = require("mongodb").MongoClient;
 const MONGODB_URI = "mongodb://127.0.0.1:27017/url_shortener";
 
@@ -35,7 +39,6 @@ app.use(methodOverride('_method'))
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded());
 
-
 function randomString() {
   const chars =  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const length = 6;
@@ -56,7 +59,6 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   res.redirect("/");
 });
-
 
 app.post("/urls/create", (req, res) => {
   var shortURL = randomString();
@@ -92,19 +94,20 @@ app.delete("/urls/:id", (req, res) => {
 
 app.get("/urls/:id/edit", (req, res) => {
   dbInstance.collection("urls").find({shortURL: req.params.id}).toArray(function(err, results) {
-    //console.log("test1", results[0]);
     res.render("pages/urls_show", { url: results[0] });
   });
 });
 
 app.put("/urls/:id/", (req, res) => {
   dbInstance.collection("urls").updateOne({shortURL: req.params.id}, {$set: {longURL: req.body.longURL}}, function(err, urlDoc) {
-      console.log("test1", req.body.id);
-      console.log("test2", req.body.longURL);
       res.redirect("/urls");
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+app.get("/urls.json", (req, res) => {
+  dbInstance.collection("urls").find().toArray(function(err, results) {
+    res.json(results);
+  });
 });
+
+
